@@ -1,0 +1,5 @@
+let g:netrw_dirhistmax  =10
+let g:netrw_dirhist_cnt =3
+let g:netrw_dirhist_1='C:/Users/t-istrel/work/zoo'
+let g:netrw_dirhist_2='C:/Users/t-istrel/work'
+let g:netrw_dirhist_3='C:/Users/t-istrel/work/media_applet'
