@@ -1,6 +1,6 @@
 if has("gui_running")
   if has("win32")
-    set guifont=Consolas:h12:cRUSSIAN
+    set guifont=Meslo_LG_M:h12:cRUSSIAN
   else
     set guifont=Monaco:h14
   endif
@@ -11,14 +11,18 @@ if has("gui_running")
   color twilight
 endif
 
+set encoding=utf-8
+
 set nobackup
 set noswapfile
 set number
 set smartindent
 
 autocmd BufWritePre * :%s/\s\+$//e
-set tabstop=2 shiftwidth=2 expandtab
+set tabstop=2 shiftwidth=2 softtabstop=2 expandtab
 
 set autoread
 
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
+
+match ErrorMsg '\%>80v.\+'
