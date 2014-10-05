@@ -17,6 +17,7 @@ set nobackup
 set noswapfile
 set number
 set smartindent
+set autoindent
 
 autocmd BufWritePre * :%s/\s\+$//e
 set tabstop=2 shiftwidth=2 softtabstop=2 expandtab
