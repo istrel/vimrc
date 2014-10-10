@@ -27,3 +27,10 @@ set autoread
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
 
 match ErrorMsg '\%>80v.\+'
+
+filetype off
+
+call pathogen#helptags()
+call pathogen#runtime_append_all_bundles()
+
+filetype plugin indent on
