@@ -16,18 +16,22 @@ call neobundle#begin(expand('~/.vim/bundle'))
 NeoBundleFetch 'Shougo/neobundle.vim'
 
 " Add or remove your Bundles here:
+" NeoBundle 'airblade/vim-gitgutter'
+NeoBundle 'isRuslan/vim-es6'
+NeoBundle 'tpope/vim-unimpaired'
+NeoBundle 'derekwyatt/vim-scala'
+NeoBundle 'thoughtbot/vim-rspec'
+NeoBundle 'slim-template/vim-slim'
 NeoBundle 'jistr/vim-nerdtree-tabs'
 NeoBundle 'digitaltoad/vim-jade'
-NeoBundle 'gosukiwi/vim-atom-dark'
 NeoBundle 'tpope/vim-rails'
 NeoBundle 'trotzig/import-js'
 NeoBundle 'bufexplorer.zip'
-NeoBundle 'altercation/vim-colors-solarized'
 NeoBundle 'tpope/vim-sleuth'
 NeoBundle 'tpope/vim-repeat'
 NeoBundle 'mtscout6/vim-cjsx'
 NeoBundle 'mattn/emmet-vim'
-NeoBundle 'scrooloose/syntastic'
+" NeoBundle 'scrooloose/syntastic'
 NeoBundle 'kien/ctrlp.vim'
 NeoBundle 'tpope/vim-fugitive'
 NeoBundle 'tpope/vim-commentary'
@@ -35,6 +39,18 @@ NeoBundle 'tpope/vim-surround'
 NeoBundle 'scrooloose/nerdtree'
 NeoBundle 'nathanaelkane/vim-indent-guides'
 NeoBundle 'bling/vim-airline'
+" haskell
+NeoBundle 'Twinside/vim-hoogle'
+NeoBundle 'eagletmt/ghcmod-vim'
+NeoBundle 'vim-scripts/hlint'
+NeoBundle 'bitc/vim-hdevtools'
+NeoBundle 'majutsushi/tagbar'
+" color themes
+NeoBundle 'NLKNguyen/papercolor-theme'
+NeoBundle 'altercation/vim-colors-solarized'
+NeoBundle 'trusktr/seti.vim'
+NeoBundle "daylerees/colour-schemes", { "rtp": "vim/" }
+NeoBundle 'gosukiwi/vim-atom-dark'
 
 " Required:
 call neobundle#end()
@@ -49,15 +65,24 @@ NeoBundleCheck
 
 set fileencodings=utf-8,cp1251,koi8-r,cp866
 
-set langmap=ё`йqцwуeкrеtнyгuшiщoзpх[ъ]фaыsвdаfпgрhоjлkдlж\\;э'яzчxсcмvиbтnьmб\\,ю.Ё~ЙQЦWУEКRЕTНYГUШIЩOЗPХ{Ъ}ФAЫSВDАFПGРHОJЛKДLЖ:Э\\"ЯZЧXСCМVИBТNЬMЮ>Б<
+" set langmap=ё`йqцwуeкrеtнyгuшiщoзpх[ъ]фaыsвdаfпgрhоjлkдlж\\;э'яzчxсcмvиbтnьmб\\,ю.Ё~ЙQЦWУEКRЕTНYГUШIЩOЗPХ{Ъ}ФAЫSВDАFПGРHОJЛKДLЖ:Э\\"ЯZЧXСCМVИBТNЬMЮ>Б<
 
 color atom-dark
+" color boxuk
+" syntax enable
+" set background=light
+" colorscheme solarized
+
+" set t_Co=256   " This is may or may not needed.
+" set background=light
+" colorscheme PaperColor
+" let g:airline_theme='papercolor'
 
 if has("gui_running")
   if has("win32")
-    set guifont=Meslo_LG_M:h12:cRUSSIAN
+    set guifont=Meslo_LG_M:h13:cRUSSIAN
   else
-    set guifont=Meslo_LG_M_Regular_for_Powerline:h11
+    set guifont=Meslo_LG_M_Regular_for_Powerline:h12
 
     let g:airline_powerline_fonts = 1
   endif
@@ -81,7 +106,7 @@ set smartindent
 set autoindent
 
 autocmd BufWritePre * :%s/\s\+$//e
-set tabstop=4 shiftwidth=4 softtabstop=4 expandtab
+set tabstop=2 shiftwidth=2 softtabstop=2 expandtab
 
 set autoread
 
@@ -104,24 +129,67 @@ let g:indent_guides_exclude_filetypes = ['nerdtree']
 
 " CtrlP settings
 let g:ctrlp_custom_ignore = '\v[\/](\.git|node_modules|build|bower_components)$'
+let g:ctrlp_max_files = 0
+if executable('ag')
+  " Use Ag over Grep
+  set grepprg=ag\ --nogroup\ --nocolor
+
+  " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
+  let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
+endif
 
 " Syntastic settings
-set statusline+=%#warningmsg#
-set statusline+=%{SyntasticStatuslineFlag()}
-set statusline+=%*
-let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 1
-let g:syntastic_check_on_open = 1
-let g:syntastic_check_on_wq = 0
-let g:syntastic_mode_map={ 'mode': 'active',
-                     \ 'active_filetypes': [],
-                     \ 'passive_filetypes': ['html'] }
+" set statusline+=%#warningmsg#
+" set statusline+=%{SyntasticStatuslineFlag()}
+" set statusline+=%*
+" let g:syntastic_always_populate_loc_list = 1
+" let g:syntastic_auto_loc_list = 1
+" let g:syntastic_check_on_open = 1
+" let g:syntastic_check_on_wq = 0
+" let g:syntastic_mode_map={ 'mode': 'active',
+"                      \ 'active_filetypes': [],
+"                      \ 'passive_filetypes': ['html', 'coffee', 'js'] }
+" Syntastic for haskell
+" map <silent> <Leader>e :Errors<CR>
+" map <Leader>s :SyntasticToggleMode<CR>
+" let g:syntastic_auto_loc_list=1
+" ghc-mod Reload
+map <silent> tu :call GHC_BrowseAll()<CR>
+" ghc-mod Type Lookup
+map <silent> tw :call GHC_ShowType(1)<CR>
+" hdevtools
+au FileType haskell nnoremap <buffer> <F1> :HdevtoolsType<CR>
+au FileType haskell nnoremap <buffer> <silent> <F2> :HdevtoolsClear<CR>
+au FileType haskell nnoremap <buffer> <silent> <F3> :HdevtoolsInfo<CR>
+" haskell tagbar
+nmap <leader>= :TagbarToggle<CR>
+nmap <leader>nn :silent !./next<CR>
+nmap <leader>pp :silent !./prev<CR>
+let g:tagbar_autofocus = 1
+" vim-slime
+let g:slime_target = "tmux"
+let g:slime_paste_file = tempname()
+
+let g:nerdtree_tabs_open_on_gui_startup = 0
 
 set laststatus=2
+
+" map <Leader>t :call RunCurrentSpecFile()<CR>
+" map <Leader>s :call RunNearestSpec()<CR>
+" map <Leader>l :call RunLastSpec()<CR>
+" map <Leader>a :call RunAllSpecs()<CR>
 
 " Mapping most frequent actions
 nnoremap <Leader>w :w<CR>
 nnoremap <Leader>q :q<CR>
+nnoremap <Leader>f :NERDTreeFind<CR>
+nnoremap <Leader>t :NERDTreeToggle<CR>
 map q: :q
+
+let &t_SI = "\<Esc>]50;CursorShape=1\x7"
+let &t_EI = "\<Esc>]50;CursorShape=0\x7"
+
+" add jbuilder syntax highlighting
+au BufNewFile,BufRead *.json.jbuilder set syntax=ruby
 
 syntax on
